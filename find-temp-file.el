@@ -84,7 +84,9 @@ contains a dot, use EXTENSION as the full file name."
   (setq extension (or extension ""))
   (find-file (if (memq ?. (string-to-list extension))
                  (expand-file-name extension find-temp-file-directory)
-               (find-temp-file--filename extension)))
+               (let ((file-path (find-temp-file--filename extension)))
+                 (make-directory (file-name-directory file-path) :parents)
+                 file-path)))
   (basic-save-buffer))
 
 (defun find-temp-file--filename (&optional extension)
