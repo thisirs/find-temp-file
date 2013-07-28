@@ -60,6 +60,8 @@ template.
   "%N-%S.%E"
   "Default template for temporary files.")
 
+(defvar find-temp-custom-spec ())
+
 ;;;###autoload
 (defun find-temp-file (extension)
   "Open a file temporary file.
@@ -95,9 +97,15 @@ contains a dot, use EXTENSION as the full file name."
          (file-template
           (format-spec
            template
-           `((?E . ,extension)
-             (?S . ,(substring (sha1 extension) 0 5))
-             (?N . "%N")))))
+           (append
+            find-temp-custom-spec
+            `((?E . ,extension)
+              (?S . ,(substring (sha1 extension) 0 5))
+              (?M . ,(symbol-name
+                      (assoc-default (concat "." extension)
+                                     auto-mode-alist
+                                     'string-match)))
+              (?N . "%N"))))))
     (catch 'found
       (mapc (lambda (prefix)
               (let* ((file-name (format-spec
