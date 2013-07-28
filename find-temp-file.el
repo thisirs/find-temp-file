@@ -4,7 +4,7 @@
 
 ;; Author: Sylvain Rousseau <thisirs at gmail dot com>
 ;; Maintainer: Sylvain Rousseau <thisirs at gmail dot com>
-;; URL:
+;; URL: https://github.com/thisirs/find-temp-file.git
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
