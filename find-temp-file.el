@@ -57,12 +57,14 @@ template.
 %E: extension
 %M: replace by mode name associated with the extension
 
+The default template is stored in `find-temp-template-default'.")
 
 (defvar find-temp-template-default
   "%N-%S.%E"
   "Default template for temporary files.")
 
-(defvar find-temp-custom-spec ())
+(defvar find-temp-custom-spec ()
+  "Additionnal specs that supersede default ones.")
 
 ;;;###autoload
 (defun find-temp-file (extension)
@@ -84,41 +86,56 @@ contains a dot, use EXTENSION as the full file name."
                default
              choice))))
   (setq extension (or extension ""))
-  (find-file (if (memq ?. (string-to-list extension))
-                 (expand-file-name extension find-temp-file-directory)
-               (let ((file-path (find-temp-file--filename extension)))
-                 (make-directory (file-name-directory file-path) :parents)
-                 file-path)))
+  (find-file
+   (let ((file-path (find-temp-file--filename extension)))
+     (make-directory (file-name-directory file-path) :parents)
+     file-path)
   (basic-save-buffer))
 
-(defun find-temp-file--filename (&optional extension)
-  "Return a full path of a temporary file to be opened."
-  (let* ((template
+(defun find-temp-file--filename (&optional extension-or-file)
+  "Return a full path of a temporary file to be opened. If
+EXTENSION-OR-FILE contains a dot, it is used as file-name. If
+not, it assumes it is the extension of the temporary file, a
+unique and recognizable name is automatically constructed."
+  (let (file-name extension file-template)
+    (if (memq ?. (string-to-list extension-or-file))
+        (setq file-name extension-or-file
+              extension (file-name-extension extension-or-file))
+      (setq extension extension-or-file))
+
+    (setq template
           (or
            (and extension
                 (assoc-default extension find-temp-template-alist 'string-match))
            find-temp-template-default))
-         (file-template
-          (format-spec
-           template
-           (append
-            find-temp-custom-spec
-            `((?E . ,extension)
-              (?S . ,(substring (sha1 extension) 0 5))
-              (?M . ,(symbol-name
-                      (assoc-default (concat "." extension)
-                                     auto-mode-alist
-                                     'string-match)))
-              (?N . "%N"))))))
-    (catch 'found
-      (mapc (lambda (prefix)
-              (let* ((file-name (format-spec
-                                 file-template
-                                 `((?N . ,prefix))))
-                     (file-path (expand-file-name file-name find-temp-file-directory)))
-                (unless (file-exists-p file-path)
-                  (throw 'found file-path))))
-            find-temp-file-prefix))))
+
+    (setq file-template
+          (expand-file-name
+           (format-spec
+            template
+            (append
+             find-temp-custom-spec
+             `((?E . ,extension)
+               (?S . ,(substring (sha1 extension) 0 5))
+               (?M . ,(symbol-name
+                       (assoc-default (concat "." extension)
+                                      auto-mode-alist
+                                      'string-match)))
+               (?N . "%N"))))
+           find-temp-file-directory))
+
+    (if file-name
+        (expand-file-name file-name (file-name-directory file-template))
+      (catch 'found
+        (mapc (lambda (prefix)
+                (setq file-name
+                      (format-spec
+                       file-template
+                       `((?N . ,prefix))))
+
+                (unless (file-exists-p file-name)
+                  (throw 'found file-name)))
+              find-temp-file-prefix)))))
 
 (provide 'find-temp-file)
 
