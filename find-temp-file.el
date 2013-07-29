@@ -54,7 +54,9 @@ template.
 
 %N: prefix taken from `find-temp-file-prefix'
 %S: shortened sha-1 of the extension
-%E: extension")
+%E: extension
+%M: replace by mode name associated with the extension
+
 
 (defvar find-temp-template-default
   "%N-%S.%E"
