@@ -33,6 +33,13 @@
 ;; You may want to bind `find-temp-file' to a convenient keystroke. In
 ;; my setup, I bind it to "C-x C-t".
 
+;;; Examples:
+
+;; (require 'find-temp-file)
+;; (global-set-key (kbd "C-x C-t") 'find-temp-file)
+;; (setq find-temp-file-directory "~/deathrow/drafts/")
+;; (setq find-temp-template-default "%D/%M/%N-%S.%E")
+
 ;;; Code
 
 (require 'format-spec)
