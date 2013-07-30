@@ -56,6 +56,7 @@ template.
 %S: shortened sha-1 of the extension
 %E: extension
 %M: replace by mode name associated with the extension
+%D: date with format %Y-%m-%d
 
 The default template is stored in `find-temp-template-default'.")
 
@@ -121,6 +122,7 @@ unique and recognizable name is automatically constructed."
                        (assoc-default (concat "." extension)
                                       auto-mode-alist
                                       'string-match)))
+               (?D . ,(format-time-string "%Y-%m-%d"))
                (?N . "%N"))))
            find-temp-file-directory))
 
