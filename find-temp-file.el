@@ -105,7 +105,7 @@ contains a dot, use EXTENSION as the full file name."
 EXTENSION-OR-FILE contains a dot, it is used as file-name. If
 not, it assumes it is the extension of the temporary file, a
 unique and recognizable name is automatically constructed."
-  (let (file-name extension file-template)
+  (let (file-name extension file-template template)
     (if (memq ?. (string-to-list extension-or-file))
         (setq file-name extension-or-file
               extension (file-name-extension extension-or-file))
