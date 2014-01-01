@@ -74,6 +74,10 @@ The default template is stored in `find-temp-template-default'.")
 (defvar find-temp-custom-spec ()
   "Additionnal specs that supersede default ones.")
 
+(defvar find-temp-add-to-history t
+  "Add containing folder to file name history when a temporary
+file is created.")
+
 ;;;###autoload
 (defun find-temp-file (extension)
   "Open a file temporary file.
@@ -94,10 +98,11 @@ contains a dot, use EXTENSION as the full file name."
                default
              choice))))
   (setq extension (or extension ""))
-  (find-file
-   (let ((file-path (find-temp-file--filename extension)))
-     (make-directory (file-name-directory file-path) :parents)
-     file-path))
+  (let ((file-path (find-temp-file--filename extension)))
+    (make-directory (file-name-directory file-path) :parents)
+    (if find-temp-add-to-history
+        (add-to-history 'file-name-history (file-name-directory file-path)))
+    (find-file file-path))
   (basic-save-buffer))
 
 (defun find-temp-file--filename (&optional extension-or-file)
