@@ -130,10 +130,10 @@ unique and recognizable name is automatically constructed."
              find-temp-custom-spec
              `((?E . ,extension)
                (?S . ,(substring (sha1 extension) 0 5))
-               (?M . ,(symbol-name
-                       (assoc-default (concat "." extension)
-                                      auto-mode-alist
-                                      'string-match)))
+               (?M . ,(symbol-name (or (assoc-default (concat "." extension)
+                                                      auto-mode-alist
+                                                      'string-match)
+                                       'other)))
                (?D . ,(format-time-string "%Y-%m-%d"))
                (?N . "%N"))))
            find-temp-file-directory))
