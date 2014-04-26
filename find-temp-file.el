@@ -44,7 +44,7 @@
 
 (require 'format-spec)
 
-(defvar find-temp-file-directory "/tmp/"
+(defvar find-temp-file-directory temporary-file-directory
   "Directory where temporary files are created.")
 
 (defvar find-temp-file-prefix
