@@ -78,9 +78,25 @@ The default template is stored in `find-temp-template-default'.")
   "Add containing folder to file name history when a temporary
 file is created.")
 
+(defmacro find-temp--ext-binding (ext binding)
+  `(define-key map (kbd ,binding)
+     (lambda ()
+       (interactive)
+       (delete-minibuffer-contents)
+       (insert ,ext)
+       (exit-minibuffer))))
+
+(defvar find-temp-file-keymap
+  (let ((map (make-sparse-keymap)))
+    (find-temp--ext-binding "org" "C-o")
+    (find-temp--ext-binding "tex" "C-t")
+    (set-keymap-parent map minibuffer-local-map)
+    map)
+  "Keymap used when asking for an extension in the minibuffer.")
+
 ;;;###autoload
 (defun find-temp-file (extension)
-  "Open a file temporary file.
+  "Open a temporary file.
 
 EXTENSION is the extension of the temporary file. If EXTENSION
 contains a dot, use EXTENSION as the full file name."
@@ -91,9 +107,10 @@ contains a dot, use EXTENSION as the full file name."
           (default-prompt (if (equal default "") ""
                             (format " (%s)" default)))
           choice)
-     (setq choice
-           (read-string
-            (format "Extension%s: " default-prompt)))
+     (setq choice (read-from-minibuffer
+                   (format "Extension%s: " default-prompt)
+                   nil
+                   find-temp-file-keymap))
      (list (if (equal "" choice)
                default
              choice))))
