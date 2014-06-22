@@ -17,7 +17,7 @@ Install the ELPA package from MELPA with <kbd>M-x</kbd>
 
 ## Settings
 
-You may want to bind `find-temp-file' to a convenient keystroke. In my
+You may want to bind `find-temp-file` to a convenient keystroke. In my
 setup, I bound it to <kbd>C-x C-t</kbd>. To quickly find a file, press
 <kbd>C-x C-t</kbd> and type the extension of the temporary file you
 want to open or just press <kbd>ENTER</kbd> to select the default
