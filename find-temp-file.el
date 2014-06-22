@@ -147,10 +147,12 @@ unique and recognizable name is automatically constructed."
              find-temp-custom-spec
              `((?E . ,extension)
                (?S . ,(substring (sha1 extension) 0 5))
-               (?M . ,(symbol-name (or (assoc-default (concat "." extension)
-                                                      auto-mode-alist
-                                                      'string-match)
-                                       'other)))
+               (?M . ,(let ((fun (assoc-default (concat "." extension)
+                                                auto-mode-alist
+                                                'string-match)))
+                        (if (symbolp fun)
+                            fun
+                          'other)))
                (?D . ,(format-time-string "%Y-%m-%d"))
                (?N . "%N"))))
            find-temp-file-directory))
