@@ -1,6 +1,6 @@
 ;;; find-temp-file.el --- Open quickly a temporary file
 
-;; Copyright (C) 2012-2013 Sylvain Rousseau <thisirs at gmail dot com>
+;; Copyright (C) 2012-2014 Sylvain Rousseau <thisirs at gmail dot com>
 
 ;; Author: Sylvain Rousseau <thisirs at gmail dot com>
 ;; Maintainer: Sylvain Rousseau <thisirs at gmail dot com>
