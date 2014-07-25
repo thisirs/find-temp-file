@@ -55,12 +55,13 @@
   "Successive names of temporary files.")
 
 (defvar find-temp-template-alist
-  '(("m" . "%N_%S.%E"))
+  '(("m" . "%N_%T.%E"))
   "Alist with file extensions and corresponding file name
 template.
 
 %N: prefix taken from `find-temp-file-prefix'
 %S: shortened sha-1 of the extension
+%T: shortened sha-1 of the extension + machine
 %E: extension
 %M: replace by mode name associated with the extension
 %D: date with format %Y-%m-%d
@@ -68,7 +69,7 @@ template.
 The default template is stored in `find-temp-template-default'.")
 
 (defvar find-temp-template-default
-  "%N-%S.%E"
+  "%N-%T.%E"
   "Default template for temporary files.")
 
 (defvar find-temp-custom-spec ()
@@ -147,6 +148,7 @@ unique and recognizable name is automatically constructed."
              find-temp-custom-spec
              `((?E . ,extension)
                (?S . ,(substring (sha1 extension) 0 5))
+               (?T . ,(substring (sha1 (concat  extension user-login-name (system-name))) 0 5))
                (?M . ,(let ((fun (assoc-default (concat "." extension)
                                                 auto-mode-alist
                                                 'string-match)))
