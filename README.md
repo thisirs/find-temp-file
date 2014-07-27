@@ -27,10 +27,37 @@ contains a dot.
 
 ## Examples
 
-The following setting stores temporary files in
-`~/Draft/<MODE-NAME>/<FILE-NAME>`. You can add your own spec with
-`find-temp-custom-spec`.
-
+The following setting stores temporary files in `~/drafts`. The file
+name used is the next available in `find-temp-file-prefix` plus the
+provided extension.
 ```lisp
-(setq find-temp-template-default "~/draft/%M/%N-%S.%E")
+(setq find-temp-file-directory "~/drafts")
+(setq find-temp-template-default "%N.%E")
+```
+The generated names are maybe too simple and could clash with other
+existing non-temporary files. We can then use the spec %T or %U that
+provide 5-characters long.
+```lisp
+(setq find-temp-template-default "%N-%U.%E")
+```
+Some extensions might require their files having a special format.
+This can be done with `find-temp-template-alist` that maps extensions
+to file name templates.
+
+With that setting, we might quite rapidly run out of automatically
+generated names. To remedy this, we add a sub-directory named after
+the current date.
+```lisp
+(setq find-temp-template-default "%D/%N-%U.%E")
+```
+
+We can also have our files to be sorted after the major mode they
+trigger.
+```lisp
+(setq find-temp-template-default "%M/%D/%N-%U.%E")
+```
+For any other behaviour, custom specs can be added to
+`find-temp-custom-spec`.
+```lisp
+(setq find-temp-custom-spec '((?D . (lambda () (format-time-string "%m"))))
 ```

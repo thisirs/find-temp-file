@@ -123,6 +123,13 @@ contains a dot, use EXTENSION as the full file name."
     (find-file file-path))
   (basic-save-buffer))
 
+(defun find-temp-file-eval-specs (specs)
+  (mapcar (lambda (spec)
+            (if (functionp (cdr spec))
+                (cons (car spec) (funcall (cdr spec)))
+              spec))
+          specs))
+
 (defun find-temp-file--filename (&optional extension-or-file)
   "Return a full path of a temporary file to be opened. If
 EXTENSION-OR-FILE contains a dot, it is used as file-name. If
@@ -145,7 +152,7 @@ unique and recognizable name is automatically constructed."
            (format-spec
             template
             (append
-             find-temp-custom-spec
+             (find-temp-file-eval-specs find-temp-custom-spec)
              `((?E . ,extension)
                (?S . ,(substring (sha1 extension) 0 5))
                (?T . ,(substring (sha1 (concat  extension user-login-name (system-name))) 0 5))
