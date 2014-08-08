@@ -40,7 +40,7 @@
 ;; (setq find-temp-file-directory "~/deathrow/drafts/")
 ;; (setq find-temp-template-default "%D/%M/%N-%S.%E")
 
-;;; Code
+;;; Code:
 
 (require 'format-spec)
 
