@@ -159,9 +159,7 @@ unique and recognizable name is automatically constructed."
                (?M . ,(let ((fun (assoc-default (concat "." extension)
                                                 auto-mode-alist
                                                 'string-match)))
-                        (if (symbolp fun)
-                            fun
-                          'other)))
+                        (or fun (default-value 'major-mode))))
                (?D . ,(format-time-string "%Y-%m-%d"))
                (?N . "%N"))))
            find-temp-file-directory))
