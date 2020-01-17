@@ -186,7 +186,8 @@ unique and recognizable name is automatically constructed."
 
                 (unless (file-exists-p file-name)
                   (throw 'found file-name)))
-              find-temp-file-prefix)))))
+              find-temp-file-prefix)
+        (error "Run out of prefixes to create filenames")))))
 
 (provide 'find-temp-file)
 
