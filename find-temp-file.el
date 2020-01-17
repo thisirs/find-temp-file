@@ -44,20 +44,27 @@
 
 (require 'format-spec)
 
-(defvar find-temp-file-directory temporary-file-directory
-  "Directory where temporary files are created.")
+(defgroup find-temp-file nil
+  "Open quickly a temporary file."
+  :link '(url-link "https://github.com/thisirs/find-temp-file.git")
+  :prefix 'find-temp
+  :group 'convenience)
 
-(defvar find-temp-file-prefix
+(defcustom find-temp-file-directory temporary-file-directory
+  "Directory where temporary files are created."
+  :type 'string)
+
+(defcustom find-temp-file-prefix
   '("alpha" "bravo" "charlie" "delta" "echo" "foxtrot" "golf" "hotel"
     "india" "juliet" "kilo" "lima" "mike" "november" "oscar" "papa"
     "quebec" "romeo" "sierra" "tango" "uniform" "victor" "whiskey"
     "x-ray" "yankee" "zulu")
-  "Successive names of temporary files.")
+  "Successive names of temporary files."
+  :type 'list)
 
-(defvar find-temp-template-alist
+(defcustom find-temp-template-alist
   '(("m" . "%N_%T.%E"))
-  "Alist with file extensions and corresponding file name
-template.
+  "Alist with file extensions and corresponding file name template.
 
 %N: prefix taken from `find-temp-file-prefix'
 %S: shortened sha-1 of the extension
@@ -66,18 +73,22 @@ template.
 %M: replace by mode name associated with the extension
 %D: date with format %Y-%m-%d
 
-The default template is stored in `find-temp-template-default'.")
+The default template is stored in `find-temp-template-default'."
+  :type 'alist)
 
-(defvar find-temp-template-default
+(defcustom find-temp-template-default
   "%N-%T.%E"
-  "Default template for temporary files.")
+  "Default template for temporary files."
+  :type 'string)
 
-(defvar find-temp-custom-spec ()
-  "Additionnal specs that supersede default ones.")
+(defcustom find-temp-custom-spec ()
+  "Additionnal specs that supersede default ones."
+  :type 'alist)
 
-(defvar find-temp-add-to-history t
+(defcustom find-temp-add-to-history t
   "Add containing folder to file name history when a temporary
-file is created.")
+file is created."
+  :type 'boolean)
 
 (defmacro find-temp--ext-binding (ext binding)
   `(define-key map (kbd ,binding)
