@@ -44,40 +44,52 @@
 
 (require 'format-spec)
 
-(defvar find-temp-file-directory temporary-file-directory
-  "Directory where temporary files are created.")
+(defgroup find-temp-file nil
+  "Open quickly a temporary file."
+  :link '(url-link "https://github.com/thisirs/find-temp-file.git")
+  :prefix 'find-temp
+  :group 'convenience)
 
-(defvar find-temp-file-prefix
+(defcustom find-temp-file-directory temporary-file-directory
+  "Directory where temporary files are created."
+  :type 'string)
+
+(defcustom find-temp-file-prefix
   '("alpha" "bravo" "charlie" "delta" "echo" "foxtrot" "golf" "hotel"
     "india" "juliet" "kilo" "lima" "mike" "november" "oscar" "papa"
     "quebec" "romeo" "sierra" "tango" "uniform" "victor" "whiskey"
     "x-ray" "yankee" "zulu")
-  "Successive names of temporary files.")
+  "Successive names of temporary files."
+  :type 'list)
 
-(defvar find-temp-template-alist
-  '(("m" . "%N_%T.%E"))
-  "Alist with file extensions and corresponding file name
-template.
+(defcustom find-temp-template-alist
+  '(("m" . "%N_%U.%E"))
+  "Alist with file extensions and corresponding file name template.
 
 %N: prefix taken from `find-temp-file-prefix'
 %S: shortened sha-1 of the extension
-%T: shortened sha-1 of the extension + machine
+%T: shortened sha-1 of the extension + username + machine
+%U: shortened sha-1 of the extension + username + machine + timestamp
 %E: extension
 %M: replace by mode name associated with the extension
 %D: date with format %Y-%m-%d
 
-The default template is stored in `find-temp-template-default'.")
+The default template is stored in `find-temp-template-default'."
+  :type 'alist)
 
-(defvar find-temp-template-default
-  "%N-%T.%E"
-  "Default template for temporary files.")
+(defcustom find-temp-template-default
+  "%N-%U.%E"
+  "Default template for temporary files."
+  :type 'string)
 
-(defvar find-temp-custom-spec ()
-  "Additionnal specs that supersede default ones.")
+(defcustom find-temp-custom-spec ()
+  "Additionnal specs that supersede default ones."
+  :type 'alist)
 
-(defvar find-temp-add-to-history t
+(defcustom find-temp-add-to-history t
   "Add containing folder to file name history when a temporary
-file is created.")
+file is created."
+  :type 'boolean)
 
 (defmacro find-temp--ext-binding (ext binding)
   `(define-key map (kbd ,binding)
@@ -156,6 +168,7 @@ unique and recognizable name is automatically constructed."
              `((?E . ,extension)
                (?S . ,(substring (sha1 extension) 0 5))
                (?T . ,(substring (sha1 (concat  extension user-login-name (system-name))) 0 5))
+               (?U . ,(substring (sha1 (concat extension (format-time-string "%Y-%m-%d") user-login-name (system-name))) 0 5))
                (?M . ,(let ((fun (assoc-default (concat "." extension)
                                                 auto-mode-alist
                                                 'string-match)))
@@ -175,7 +188,8 @@ unique and recognizable name is automatically constructed."
 
                 (unless (file-exists-p file-name)
                   (throw 'found file-name)))
-              find-temp-file-prefix)))))
+              find-temp-file-prefix)
+        (error "Run out of prefixes to create filenames")))))
 
 (provide 'find-temp-file)
 
