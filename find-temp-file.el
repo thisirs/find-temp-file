@@ -150,7 +150,7 @@ unique and recognizable name is automatically constructed."
   (let (file-name extension file-template template)
     (if (memq ?. (string-to-list extension-or-file))
         (setq file-name extension-or-file
-              extension (file-name-extension extension-or-file))
+              extension (or (file-name-extension extension-or-file) ""))
       (setq extension extension-or-file))
 
     (setq template
